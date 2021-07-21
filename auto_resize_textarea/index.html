@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Автоизменение размера Textarea</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <h2>Автоизменение размера Textarea</h2>
+        <textarea placeholder="Введите текст" required></textarea>
+
+        <br>
+        <input type="text" placeholder="Введите текст"/>
+    </div>
+
+    <script>
+        function insertTextAtCursor(el, text, offset) {
+            const val = el.value;
+            let endIndex = 0;
+            let range = 0;
+            let doc = el.ownerDocument;
+
+            console.log('el', el);
+
+            if (typeof el.selectionStart === "number" && typeof el.selectionEnd === "number") {
+                endIndex = el.selectionEnd;
+                el.value = val.slice(0, endIndex) + text + val.slice(endIndex);
+                el.selectionStart = el.selectionEnd = endIndex + text.length+(offset?offset:0);
+            } else if (doc.selection != "undefined" && doc.selection.createRange) {
+                el.focus();
+                range = doc.selection.createRange();
+                range.collapse(false);
+                range.text = text;
+                range.select();
+            }
+        }
+
+        const textarea = document.querySelector("textarea");
+        const inputtext = document.querySelector("input");
+
+        textarea.addEventListener("keyup", e => {
+            textarea.style.height = '59px';
+            let scHeight = e.target.scrollHeight;
+            textarea.style.height = `${scHeight}px`;
+        });
+
+        textarea.addEventListener("click", function() {
+            insertTextAtCursor(textarea, '########');
+        });
+
+        inputtext.addEventListener("click", function() {
+            insertTextAtCursor(inputtext, '!!!!!!!!');
+        });
+
+    </script>
+</body>
+</html>
